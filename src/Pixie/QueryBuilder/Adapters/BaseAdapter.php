@@ -259,6 +259,9 @@ abstract class BaseAdapter
 
         // Wheres
         list($whereCriteria, $whereBindings) = $this->buildCriteriaWithType($statements, 'wheres', 'WHERE');
+	    
+	// Joins
+        list($joinString, $joinBindings) = $this->buildJoin($statements);
 
         // Limit
         $limit = isset($statements['limit']) ? 'LIMIT ' . $statements['limit'] : '';
@@ -266,6 +269,7 @@ abstract class BaseAdapter
         $sqlArray = array(
             'UPDATE',
             $this->wrapSanitizer($table),
+	    $joinString,
             'SET ' . $updateStatement,
             $whereCriteria,
             $limit
@@ -273,7 +277,7 @@ abstract class BaseAdapter
 
         $sql = $this->concatenateQuery($sqlArray, ' ', false);
 
-        $bindings = array_merge($bindings, $whereBindings);
+        $bindings = array_merge($joinBindings, $bindings, $whereBindings);
         return compact('sql', 'bindings');
     }
 
