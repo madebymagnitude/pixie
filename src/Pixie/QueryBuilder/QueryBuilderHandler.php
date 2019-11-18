@@ -83,6 +83,21 @@ class QueryBuilderHandler
     }
 
     /**
+     * Try ping database. If dead, reconnect.
+     */
+    private function ping() {
+        try {
+            $this->pdo->exec("SELECT 1");
+        } catch (\Exception $ex) {
+            $this->connection->reconnect();
+            $this->container = $this->connection->getContainer();
+            $this->pdo = $this->connection->getPdoInstance();
+            $this->adapter = $this->connection->getAdapter();
+            $this->adapterConfig = $this->connection->getAdapterConfig();
+        }
+    }
+
+    /**
      * Set the fetch mode
      *
      * @param $mode
@@ -161,6 +176,8 @@ class QueryBuilderHandler
      */
     public function get()
     {
+        $this->ping();
+
         $eventResult = $this->fireEvents('before-select');
         if (!is_null($eventResult)) {
             return $eventResult;
@@ -313,6 +330,7 @@ class QueryBuilderHandler
      */
     private function doInsert($data, $type)
     {
+        $this->ping();
         $eventResult = $this->fireEvents('before-insert');
         if (!is_null($eventResult)) {
             return $eventResult;
@@ -410,6 +428,7 @@ class QueryBuilderHandler
      */
     public function update($data)
     {
+        $this->ping();
         $eventResult = $this->fireEvents('before-update');
         if (!is_null($eventResult)) {
             return $eventResult;
@@ -453,6 +472,7 @@ class QueryBuilderHandler
      */
     public function delete()
     {
+        $this->ping();
         $eventResult = $this->fireEvents('before-delete');
         if (!is_null($eventResult)) {
             return $eventResult;
