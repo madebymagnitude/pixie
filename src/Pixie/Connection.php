@@ -100,26 +100,6 @@ class Connection
     }
 
     /**
-     * Recreate the connection adapter
-     */
-    public function reconnect()
-    {
-        $this->pdoInstance = null;
-        // Build a database connection if we don't have one connected
-
-        $adapter = '\\Pixie\\ConnectionAdapters\\' . ucfirst(strtolower($this->adapter));
-
-        $adapterInstance = $this->container->build($adapter, array($this->container));
-
-        $pdo = $adapterInstance->connect($this->adapterConfig);
-        $this->setPdoInstance($pdo);
-
-        // Preserve the first database connection with a static property
-        static::$storedConnection = $this;
-
-    }
-
-    /**
      * @param \PDO $pdo
      *
      * @return $this

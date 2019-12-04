@@ -71,7 +71,6 @@ class TestCase extends \PHPUnit_Framework_TestCase {
         $this->mockConnection->shouldReceive('getAdapterConfig')->andReturn(array('prefix' => 'cb_'));
         $this->mockConnection->shouldReceive('getContainer')->andReturn($this->container);
         $this->mockConnection->shouldReceive('getEventHandler')->andReturn($eventHandler);
-        $this->mockConnection->shouldReceive('reconnect');
     }
 
     public function tearDown()
