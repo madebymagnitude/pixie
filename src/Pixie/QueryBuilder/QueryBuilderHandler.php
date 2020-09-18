@@ -792,9 +792,15 @@ class QueryBuilderHandler
         return $this->whereNullHandler($key, 'NOT', 'or');
     }
 
+    /**
+     * @param $key
+     * @param $prefix
+     * @param $operator
+     * @return QueryBuilderHandler
+     */
     protected function whereNullHandler($key, $prefix = '', $operator = '')
     {
-        $key = $this->adapterInstance->wrapSanitizer($this->addTablePrefix($key));
+        $key = $this->addTablePrefix($key);
         return $this->{$operator . 'Where'}($this->raw("{$key} IS {$prefix} NULL"));
     }
 
